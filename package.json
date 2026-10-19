@@ -1,0 +1,19 @@
+{
+  "name": "testerhub-shop-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local Shop API and Scalar documentation for practical QA courses by Evgenii Sychev",
+  "type": "module",
+  "engines": { "node": ">=24 <25" },
+  "scripts": {
+    "start": "node server.mjs",
+    "start:buggy": "node server.mjs --buggy",
+    "test": "node --test test/server.test.mjs",
+    "lint:practice": "spectral lint exercise/lint/openapi.yaml --fail-severity=error",
+    "lint:review": "spectral lint exercise/review/openapi.yaml --fail-severity=error",
+    "lint:ci": "spectral lint exercise/ci/openapi.yaml --fail-severity=error",
+    "lint:final": "spectral lint exercise/final/openapi.yaml --fail-severity=error"
+  },
+  "dependencies": { "@scalar/api-reference": "1.75.0" },
+  "devDependencies": { "@stoplight/spectral-cli": "6.17.0" }
+}

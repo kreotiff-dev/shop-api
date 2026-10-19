@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shop API · TesterHub</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="/docs/scalar.js"></script>
+    <script>
+      Scalar.createApiReference('#app', {
+        url: '/openapi.yaml',
+        proxyUrl: '',
+        hideClientButton: true,
+        showDeveloperTools: 'never',
+        agent: { disabled: true },
+        defaultHttpClient: { targetKey: 'shell', clientKey: 'curl' }
+      });
+    </script>
+  </body>
+</html>

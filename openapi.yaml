@@ -1,0 +1,204 @@
+openapi: 3.0.3
+info:
+  title: Shop API
+  description: Учебный API магазина для курса Shift-left QA.
+  version: 1.0.0
+servers:
+  - url: http://127.0.0.1:4010/api/v1
+paths:
+  /products:
+    get:
+      operationId: listProducts
+      summary: Список товаров
+      description: Возвращает страницу каталога.
+      tags: [products]
+      parameters:
+        - name: limit
+          in: query
+          description: Сколько товаров вернуть.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: category
+          in: query
+          description: Фильтр по категории.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Страница товаров.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductPage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /products/{productId}:
+    get:
+      operationId: getProduct
+      summary: Карточка товара
+      description: Возвращает один товар по идентификатору.
+      tags: [products]
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: Идентификатор товара.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Товар.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /orders:
+    post:
+      operationId: createOrder
+      summary: Создать заказ
+      description: Создает заказ из списка позиций.
+      tags: [orders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderCreate"
+      responses:
+        "201":
+          description: Заказ создан.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "422":
+          $ref: "#/components/responses/BusinessError"
+  /orders/{orderId}:
+    get:
+      operationId: getOrder
+      summary: Получить заказ
+      description: Возвращает заказ по идентификатору.
+      tags: [orders]
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          description: Идентификатор заказа.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Заказ.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "404":
+          $ref: "#/components/responses/NotFound"
+components:
+  schemas:
+    Product:
+      type: object
+      required: [id, name, price, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Чехол для телефона
+        price:
+          type: number
+          format: double
+          minimum: 0
+          example: 1990
+        status:
+          type: string
+          enum: [active, hidden, archived]
+    ProductPage:
+      type: object
+      required: [items, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+        total:
+          type: integer
+    OrderItem:
+      type: object
+      required: [productId, quantity]
+      properties:
+        productId:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          minimum: 1
+          maximum: 50
+    OrderCreate:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        comment:
+          type: string
+          maxLength: 500
+    Order:
+      type: object
+      required: [id, status, items, total]
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [new, paid, shipped, cancelled]
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        total:
+          type: number
+          format: double
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          example: PRODUCT_NOT_FOUND
+        message:
+          type: string
+  responses:
+    BadRequest:
+      description: Некорректный запрос.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: Объект не найден.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    BusinessError:
+      description: Нарушено бизнес-правило.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"

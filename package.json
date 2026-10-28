@@ -1,6 +1,6 @@
 {
   "name": "testerhub-shop-api",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "description": "Local Shop API and Scalar documentation for practical QA courses by Evgenii Sychev",
   "type": "module",

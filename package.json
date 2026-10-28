@@ -14,7 +14,7 @@
     "lint:practice": "spectral lint exercise/lint/openapi.yaml --fail-severity=error"
   },
   "dependencies": {
-    "@scalar/api-reference": "1.75.0"
+    "@scalar/api-reference": "1.76.2"
   },
   "devDependencies": {
     "@stoplight/spectral-cli": "6.17.0"
